@@ -75,9 +75,7 @@ The 3rd part controller could run on either hub or managed cluster. Combined wit
 
 In the example, the controller is deployed on the managed cluster via [deployment](https://github.com/JiahaoWei-RH/addon-framework/blob/main/examples/socre-collect/manifests/templates/deployment.yaml) .
 
-
-
-![image-20220425162234515](/Users/redhat/Library/Application Support/typora-user-images/image-20220425162234515.png)
+![image](https://user-images.githubusercontent.com/56222648/165246983-903d2bf3-7d38-47d8-b3d9-ca4aca2b60bf.png)
 
 ### 2. How to maintain the AddOnPlacementScore CR lifecycle
 - When should the score be created ?
