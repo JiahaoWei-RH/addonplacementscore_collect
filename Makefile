@@ -21,8 +21,8 @@ KUSTOMIZE_ARCHIVE_NAME?=kustomize_$(KUSTOMIZE_VERSION)_$(GOHOSTOS)_$(GOHOSTARCH)
 kustomize_dir:=$(dir $(KUSTOMIZE))
 
 # Image URL to use all building/pushing image targets;
-GO_BUILD_PACKAGES :=./examples/...
-IMAGE ?= helloworld-addon
+GO_BUILD_PACKAGES :=./resource_usage_collect/...
+IMAGE ?= resource_usage_collect-addon
 IMAGE_REGISTRY ?= quay.io/open-cluster-management
 IMAGE_TAG ?= latest
 EXAMPLE_IMAGE_NAME ?= $(IMAGE_REGISTRY)/$(IMAGE):$(IMAGE_TAG)
@@ -32,7 +32,7 @@ BASE_DIR := $(shell basename $(PWD))
 DEST := $(GOPATH)/src/$(GIT_HOST)/$(BASE_DIR)
 
 # Add packages to do unit test
-GO_TEST_PACKAGES :=./pkg/...
+GO_TEST_PACKAGES :=./...
 
 # This will call a macro called "build-image" which will generate image specific targets based on the parameters:
 # $0 - macro name

@@ -1,12 +1,12 @@
 package main
 
 import (
+	helloworldagent "JiahaoWei-RH/addonplacementscore_collect/resource_usage_collect/agent"
 	"context"
 	"embed"
 	"fmt"
 	"os"
 
-	helloworldagent "JiahaoWei-RH/addonplacementscore_collect/examples/socre-collect/agent"
 	"github.com/openshift/library-go/pkg/assets"
 	"github.com/openshift/library-go/pkg/operator/events"
 	"github.com/openshift/library-go/pkg/operator/resource/resourceapply"
@@ -101,7 +101,7 @@ func getValues(cluster *clusterv1.ManagedCluster,
 	addon *addonapiv1alpha1.ManagedClusterAddOn) (addonfactory.Values, error) {
 	installNamespace := addon.Spec.InstallNamespace
 	if len(installNamespace) == 0 {
-		installNamespace = helloworldagent.HelloworldAgentInstallationNamespace
+		installNamespace = helloworldagent.AgentInstallationNamespace
 	}
 
 	image := os.Getenv("EXAMPLE_IMAGE_NAME")

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"JiahaoWei-RH/addonplacementscore_collect/examples/socre-collect/agent"
+	"JiahaoWei-RH/addonplacementscore_collect/resource_usage_collect/agent"
 	"context"
 	"fmt"
 	"k8s.io/klog/v2"
@@ -87,7 +87,7 @@ func runController(ctx context.Context, controllerContext *controllercmd.Control
 	agentAddon, err := addonfactory.NewAgentAddonFactory(addonName, fs, "manifests/templates").
 		WithGetValuesFuncs(getValues, addonfactory.GetValuesFromAddonAnnotation).
 		WithAgentRegistrationOption(registrationOption).
-		WithInstallStrategy(addonagent.InstallAllStrategy(agent.HelloworldAgentInstallationNamespace)).
+		WithInstallStrategy(addonagent.InstallAllStrategy(agent.AgentInstallationNamespace)).
 		BuildTemplateAgentAddon()
 	if err != nil {
 		klog.Errorf("failed to build agent %v", err)

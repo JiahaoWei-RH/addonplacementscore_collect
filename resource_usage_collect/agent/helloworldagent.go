@@ -25,14 +25,11 @@ import (
 	clientset "open-cluster-management.io/api/client/cluster/clientset/versioned"
 	clusterinformers "open-cluster-management.io/api/client/cluster/informers/externalversions"
 	clusterinformers1 "open-cluster-management.io/api/client/cluster/informers/externalversions/cluster/v1alpha1"
-	v1alpha2 "open-cluster-management.io/api/cluster/v1alpha1"
+	apiv1alpha2 "open-cluster-management.io/api/cluster/v1alpha1"
 )
 
-// Helloworld Agent is an example that syncs configmap in cluster namespace of hub cluster
-// to the install namespace in managedcluster.
-// addOnAgentInstallationNamespace is the namespace on the managed cluster to install the helloworld addon agent.
-const HelloworldAgentInstallationNamespace = "default"
-const AddOnPlacementScoresName = "test-score1"
+const AgentInstallationNamespace = "default"
+const AddOnPlacementScoresName = "resource-usage-score"
 
 func NewAgentCommand(addonName string) *cobra.Command {
 	o := NewAgentOptions(addonName)
@@ -102,7 +99,6 @@ func (o *AgentOptions) RunAgent(ctx context.Context, controllerContext *controll
 		o.AddonName,
 		o.AddonNamespace,
 		controllerContext.EventRecorder,
-		AddOnPlacementScoresName,
 		spokeKubeInformerFactory.Core().V1().Nodes(),
 		spokeKubeInformerFactory.Core().V1().Pods(),
 	)
@@ -144,7 +140,6 @@ func newAgentController(
 	addonName string,
 	addonNamespace string,
 	recorder events.Recorder,
-	scoreName string,
 	nodeInformer corev1informers.NodeInformer,
 	podInformer corev1informers.PodInformer,
 ) factory.Controller {
@@ -159,18 +154,6 @@ func newAgentController(
 		podInformer:               podInformer,
 		nodeInformer:              nodeInformer,
 	}
-	//return factory.New().WithFilteredEventsInformersQueueKeyFunc(
-	//	func(obj runtime.Object) string {
-	//		key, _ := cache.MetaNamespaceKeyFunc(obj)
-	//		return key
-	//	}, func(obj interface{}) bool {
-	//		accessor, err := meta.Accessor(obj)
-	//		if err != nil {
-	//			return false
-	//		}
-	//		name := accessor.GetName()
-	//		return name == scoreName
-	//	}, addOnPlacementScoreInformer.Informer()).WithSync(c.sync).ResyncEvery(time.Second*30).ToController("score-agent-controller", recorder)
 	return factory.New().WithInformersQueueKeyFunc(
 		func(obj runtime.Object) string {
 			key, _ := cache.MetaNamespaceKeyFunc(obj)
@@ -183,7 +166,7 @@ func newAgentController(
 func (c *agentController) sync(ctx context.Context, syncCtx factory.SyncContext) error {
 	score := NewScore(c.nodeInformer, c.podInformer)
 	cpuValue, memValue, err := score.calculateValue()
-	items := []v1alpha2.AddOnPlacementScoreItem{
+	items := []apiv1alpha2.AddOnPlacementScoreItem{
 		{
 			Name:  "cpuAvailable",
 			Value: int32(cpuValue),
@@ -197,12 +180,12 @@ func (c *agentController) sync(ctx context.Context, syncCtx factory.SyncContext)
 	addonPlacementScore, err := c.AddOnPlacementScoreLister.AddOnPlacementScores(c.clusterName).Get(AddOnPlacementScoresName)
 	switch {
 	case errors.IsNotFound(err):
-		addonPlacementScore = &v1alpha2.AddOnPlacementScore{
+		addonPlacementScore = &apiv1alpha2.AddOnPlacementScore{
 			ObjectMeta: metav1.ObjectMeta{
 				Namespace: c.clusterName,
 				Name:      AddOnPlacementScoresName,
 			},
-			Status: v1alpha2.AddOnPlacementScoreStatus{
+			Status: apiv1alpha2.AddOnPlacementScoreStatus{
 				Scores: items,
 			},
 		}

@@ -26,5 +26,5 @@ spec:
               name: image-config
               key: EXAMPLE_IMAGE_NAME
         args:
-          - "/socre-collect"
+          - "/resource_usage_collect"
           - "controller"

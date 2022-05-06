@@ -25,7 +25,7 @@ spec:
         image: {{ .Image }}
         imagePullPolicy: IfNotPresent
         args:
-          - "/socre-collect"
+          - "/resource_usage_collect"
           - "agent"
           - "--hub-kubeconfig=/var/run/hub/kubeconfig"
           - "--cluster-name={{ .ClusterName }}"
