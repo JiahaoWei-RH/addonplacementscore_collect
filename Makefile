@@ -21,8 +21,8 @@ KUSTOMIZE_ARCHIVE_NAME?=kustomize_$(KUSTOMIZE_VERSION)_$(GOHOSTOS)_$(GOHOSTARCH)
 kustomize_dir:=$(dir $(KUSTOMIZE))
 
 # Image URL to use all building/pushing image targets;
-GO_BUILD_PACKAGES :=./resource_usage_collect/...
-IMAGE ?= resource_usage_collect-addon
+GO_BUILD_PACKAGES :=./pkg/...
+IMAGE ?= resource-usage-collect-addon
 IMAGE_REGISTRY ?= quay.io/open-cluster-management
 IMAGE_TAG ?= latest
 EXAMPLE_IMAGE_NAME ?= $(IMAGE_REGISTRY)/$(IMAGE):$(IMAGE_TAG)
@@ -32,7 +32,7 @@ BASE_DIR := $(shell basename $(PWD))
 DEST := $(GOPATH)/src/$(GIT_HOST)/$(BASE_DIR)
 
 # Add packages to do unit test
-GO_TEST_PACKAGES :=./...
+GO_TEST_PACKAGES :=./pkg/...
 
 # This will call a macro called "build-image" which will generate image specific targets based on the parameters:
 # $0 - macro name
@@ -42,17 +42,14 @@ GO_TEST_PACKAGES :=./...
 # It will generate target "image-$(1)" for building the image and binding it as a prerequisite to target "images".
 $(call build-image,$(IMAGE),$(IMAGE_REGISTRY)/$(IMAGE),./Dockerfile,.)
 
-deploy-ocm:
-	examples/deploy/ocm/install.sh
-
-deploy-addonplacementscore: ensure-kustomize
-	cp examples/deploy/addonplacementscore/kustomization.yaml examples/deploy/addonplacementscore/kustomization.yaml.tmp
-	cd examples/deploy/addonplacementscore && $(KUSTOMIZE) edit set image example-addon-image=$(EXAMPLE_IMAGE_NAME) && $(KUSTOMIZE) edit add configmap image-config --from-literal=EXAMPLE_IMAGE_NAME=$(EXAMPLE_IMAGE_NAME)
-	$(KUSTOMIZE) build examples/deploy/addonplacementscore | $(KUBECTL) apply -f -
-	mv examples/deploy/addonplacementscore/kustomization.yaml.tmp examples/deploy/addonplacementscore/kustomization.yaml
+deploy: ensure-kustomize
+	cp deploy/kustomization.yaml deploy/kustomization.yaml.tmp
+	cd deploy && $(KUSTOMIZE) edit set image example-addon-image=$(EXAMPLE_IMAGE_NAME) && $(KUSTOMIZE) edit add configmap image-config --from-literal=EXAMPLE_IMAGE_NAME=$(EXAMPLE_IMAGE_NAME)
+	$(KUSTOMIZE) build deploy | $(KUBECTL) apply -f -
+	mv deploy/kustomization.yaml.tmp deploy/kustomization.yaml
 
 undeploy-addonplacementscore: ensure-kustomize
-	$(KUSTOMIZE) build examples/deploy/addonplacementscore | $(KUBECTL) delete --ignore-not-found -f -
+	$(KUSTOMIZE) build deploy | $(KUBECTL) delete --ignore-not-found -f -
 
 
 # Ensure kustomize
@@ -67,4 +64,3 @@ else
 	$(info Using existing kustomize from "$(KUSTOMIZE)")
 endif
 
-include ./test/integration-test.mk

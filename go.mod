@@ -1,8 +1,9 @@
-module JiahaoWei-RH/addonplacementscore_collect
+module JiahaoWei-RH/resource-usage-collect
 
 go 1.17
 
 require (
+	github.com/openshift/build-machinery-go v0.0.0-20220429084610-baff9f8d23b3
 	github.com/openshift/library-go v0.0.0-20220112153822-ac82336bd076
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/pflag v1.0.5
@@ -13,7 +14,6 @@ require (
 	k8s.io/klog/v2 v2.30.0
 	open-cluster-management.io/addon-framework v0.3.0
 	open-cluster-management.io/api v0.5.1-0.20220112073018-2d280a97a052
-	sigs.k8s.io/yaml v1.3.0
 )
 
 require (
@@ -122,4 +122,5 @@ require (
 	sigs.k8s.io/json v0.0.0-20211020170558-c049b76a60c6 // indirect
 	sigs.k8s.io/kube-storage-version-migrator v0.0.4 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.0 // indirect
+	sigs.k8s.io/yaml v1.3.0 // indirect
 )
