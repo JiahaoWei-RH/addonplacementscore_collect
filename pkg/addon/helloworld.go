@@ -1,7 +1,7 @@
 package main
 
 import (
-	helloworldagent "JiahaoWei-RH/addonplacementscore_collect/pkg/agent"
+	helloworldagent "JiahaoWei-RH/resource-usage-collect/pkg/addon/agent"
 	"context"
 	"embed"
 	"fmt"

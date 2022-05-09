@@ -26,5 +26,5 @@ spec:
               name: image-config
               key: EXAMPLE_IMAGE_NAME
         args:
-          - "/resource_usage_collect"
+          - "/addon"
           - "controller"

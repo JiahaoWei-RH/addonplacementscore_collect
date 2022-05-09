@@ -1,7 +1,7 @@
 package main
 
 import (
-	"JiahaoWei-RH/addonplacementscore_collect/pkg/agent"
+	"JiahaoWei-RH/resource-usage-collect/pkg/addon/agent"
 	"context"
 	"fmt"
 	"k8s.io/klog/v2"

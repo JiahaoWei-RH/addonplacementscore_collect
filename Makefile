@@ -48,7 +48,7 @@ deploy: ensure-kustomize
 	$(KUSTOMIZE) build deploy | $(KUBECTL) apply -f -
 	mv deploy/kustomization.yaml.tmp deploy/kustomization.yaml
 
-undeploy-addonplacementscore: ensure-kustomize
+undeploy: ensure-kustomize
 	$(KUSTOMIZE) build deploy | $(KUBECTL) delete --ignore-not-found -f -
 
 
