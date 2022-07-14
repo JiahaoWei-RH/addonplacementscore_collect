@@ -2,12 +2,13 @@ package agent
 
 import (
 	"context"
+	"time"
+
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/informers"
 	corev1informers "k8s.io/client-go/informers/core/v1"
 	clusterclient "open-cluster-management.io/api/client/cluster/clientset/versioned"
 	"open-cluster-management.io/api/client/cluster/listers/cluster/v1alpha1"
-	"time"
 
 	"github.com/openshift/library-go/pkg/controller/controllercmd"
 	"github.com/openshift/library-go/pkg/controller/factory"
@@ -34,7 +35,7 @@ const AddOnPlacementScoresName = "resource-usage-score"
 func NewAgentCommand(addonName string) *cobra.Command {
 	o := NewAgentOptions(addonName)
 	cmd := controllercmd.
-		NewControllerCommandConfig("addonplacementscorecollect-addon-agent", version.Get(), o.RunAgent).
+		NewControllerCommandConfig("resource-usage-collection-addon-agent", version.Get(), o.RunAgent).
 		NewCommand()
 	cmd.Use = "agent"
 	cmd.Short = "Start the addon agent"
