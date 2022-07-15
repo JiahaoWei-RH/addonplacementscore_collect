@@ -1,7 +1,7 @@
 package main
 
 import (
-	helloworldagent "JiahaoWei-RH/resource-usage-collect/pkg/addon/agent"
+	addonagent "JiahaoWei-RH/resource-usage-collect/pkg/addon/agent"
 	"context"
 	"embed"
 	"fmt"
@@ -101,7 +101,7 @@ func getValues(cluster *clusterv1.ManagedCluster,
 	addon *addonapiv1alpha1.ManagedClusterAddOn) (addonfactory.Values, error) {
 	installNamespace := addon.Spec.InstallNamespace
 	if len(installNamespace) == 0 {
-		installNamespace = helloworldagent.AgentInstallationNamespace
+		installNamespace = addonagent.AgentInstallationNamespace
 	}
 
 	image := os.Getenv("EXAMPLE_IMAGE_NAME")

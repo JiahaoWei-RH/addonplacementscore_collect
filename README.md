@@ -26,7 +26,7 @@ go get github.com/openshift/imagebuilder/cmd/imagebuilder@v1.2.1
 export PATH=$PATH:$(go env GOPATH)/bin
 # build image
 make images
-export EXAMPLE_IMAGE_NAME=quay.io/open-cluster-management/helloworld-addon:latest
+export EXAMPLE_IMAGE_NAME=quay.io/open-cluster-management/resource-usage-collect-addon:latest
 ```
 
 If your are using kind, load image into kind cluster.

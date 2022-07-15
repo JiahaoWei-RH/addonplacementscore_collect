@@ -4,10 +4,11 @@ import (
 	"JiahaoWei-RH/resource-usage-collect/pkg/addon/agent"
 	"context"
 	"fmt"
-	"k8s.io/klog/v2"
 	"math/rand"
 	"os"
 	"time"
+
+	"k8s.io/klog/v2"
 
 	goflag "flag"
 
@@ -43,7 +44,7 @@ func main() {
 func newCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "addon",
-		Short: "helloworld example addon",
+		Short: "resource usage collection addon",
 		Run: func(cmd *cobra.Command, args []string) {
 			if err := cmd.Help(); err != nil {
 				fmt.Fprintf(os.Stderr, "%v\n", err)
@@ -66,7 +67,7 @@ func newCommand() *cobra.Command {
 
 func newControllerCommand() *cobra.Command {
 	cmd := controllercmd.
-		NewControllerCommandConfig("helloworld-addon-controller", version.Get(), runController).
+		NewControllerCommandConfig("resource-usage-collection-addon-controller", version.Get(), runController).
 		NewCommand()
 	cmd.Use = "controller"
 	cmd.Short = "Start the addon controller"
