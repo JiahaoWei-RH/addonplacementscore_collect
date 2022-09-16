@@ -23,7 +23,7 @@ kustomize_dir:=$(dir $(KUSTOMIZE))
 # Image URL to use all building/pushing image targets;
 GO_BUILD_PACKAGES :=./pkg/...
 IMAGE ?= resource-usage-collect-addon
-IMAGE_REGISTRY ?= quay.io/open-cluster-management
+IMAGE_REGISTRY ?= quay.io/haoqing
 IMAGE_TAG ?= latest
 EXAMPLE_IMAGE_NAME ?= $(IMAGE_REGISTRY)/$(IMAGE):$(IMAGE_TAG)
 

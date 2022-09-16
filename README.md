@@ -31,12 +31,12 @@ go get github.com/openshift/imagebuilder/cmd/imagebuilder@v1.2.1
 export PATH=$PATH:$(go env GOPATH)/bin
 # build image
 make images
-export EXAMPLE_IMAGE_NAME=quay.io/open-cluster-management/resource-usage-collect-addon:latest
 ```
 
 If your are using kind, load image into kind cluster.
 
 ```bash
+export EXAMPLE_IMAGE_NAME=quay.io/haoqing/resource-usage-collect-addon:latest
 kind load docker-image $EXAMPLE_IMAGE_NAME --name cluster_name # kind load docker-image  $EXAMPLE_IMAGE_NAME --name hub
 ```
 
