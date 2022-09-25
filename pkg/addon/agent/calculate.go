@@ -6,14 +6,19 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	corev1informers "k8s.io/client-go/informers/core/v1"
 	corev1lister "k8s.io/client-go/listers/core/v1"
+	"k8s.io/klog/v2"
 	clusterv1 "open-cluster-management.io/api/cluster/v1"
 )
 
 const MAXSCORE = float64(100)
+const MINSCORE = float64(-100)
+
 const MAXCPUCOUNT = float64(100)
+const MINCPUCOUNT = float64(0)
 
 // 1TB
 const MAXMEMCOUNT = float64(1024 * 1024)
+const MINMEMCOUNT = float64(0)
 
 type Score struct {
 	nodeLister        corev1lister.NodeLister
@@ -31,12 +36,12 @@ func NewScore(nodeInformer corev1informers.NodeInformer, podInformer corev1infor
 	}
 }
 
-func (s *Score) calculateValue() (cpuValue int64, memValue int64, err error) {
-	cpuAllocInt, err := s.calculateClusterAllocateable(clusterv1.ResourceCPU)
+func (s *Score) calculateScore() (cpuScore int64, memScore int64, err error) {
+	cpuAlloc, err := s.calculateClusterAllocateable(clusterv1.ResourceCPU)
 	if err != nil {
 		return 0, 0, err
 	}
-	memAllocInt, err := s.calculateClusterAllocateable(clusterv1.ResourceMemory)
+	memAlloc, err := s.calculateClusterAllocateable(clusterv1.ResourceMemory)
 	if err != nil {
 		return 0, 0, err
 	}
@@ -50,23 +55,33 @@ func (s *Score) calculateValue() (cpuValue int64, memValue int64, err error) {
 		return 0, 0, err
 	}
 
+	return s.normalizeScore(cpuAlloc, cpuUsage, memAlloc, memUsage)
+}
+
+func (s *Score) normalizeScore(cpuAlloc, cpuUsage, memAlloc, memUsage int64) (cpuScore int64, memScore int64, err error) {
+	klog.Infof("cpuAlloc = %v, cpuUsage = %v, memAlloc = %v, memUsage = %v", cpuAlloc, cpuUsage, memAlloc, memUsage)
 	var availableCpu float64
-	availableCpu = float64(cpuAllocInt - cpuUsage)
+	availableCpu = float64(cpuAlloc - cpuUsage)
 	if availableCpu > MAXCPUCOUNT {
-		cpuValue = int64(MAXSCORE)
+		cpuScore = int64(MAXSCORE)
+	} else if availableCpu <= MINCPUCOUNT {
+		cpuScore = int64(MINSCORE)
 	} else {
-		cpuValue = int64(MAXSCORE / MAXCPUCOUNT * availableCpu)
+		cpuScore = int64(200*availableCpu/MAXCPUCOUNT - 100)
 	}
 
 	var availableMem float64
-	availableMem = float64((memAllocInt - memUsage) / (1024 * 1024))
+	availableMem = float64((memAlloc - memUsage) / (1024 * 1024)) // MB
 	if availableMem > MAXMEMCOUNT {
-		memValue = int64(MAXSCORE)
+		memScore = int64(MAXSCORE)
+	} else if availableMem <= MINMEMCOUNT {
+		memScore = int64(MINSCORE)
 	} else {
-		memValue = int64(MAXSCORE / MAXMEMCOUNT * availableMem)
+		memScore = int64(200*availableMem/MAXMEMCOUNT - 100)
 	}
 
-	return cpuValue, memValue, nil
+	klog.Infof("cpuScore = %v, memScore = %v", cpuScore, memScore)
+	return cpuScore, memScore, nil
 }
 
 func (s *Score) calculateClusterAllocateable(resourceName clusterv1.ResourceName) (int64, error) {
@@ -125,7 +140,6 @@ func (s *Score) calculatePodResourceRequest(resourceName v1.ResourceName) (int64
 		}
 		podCount++
 	}
-
 	return podRequest, nil
 }
 

@@ -23,7 +23,7 @@ spec:
       containers:
       - name: resource-usage-collect-agent
         image: {{ .Image }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         args:
           - "/addon"
           - "agent"
