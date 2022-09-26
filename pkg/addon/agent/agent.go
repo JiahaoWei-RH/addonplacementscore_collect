@@ -166,15 +166,15 @@ func newAgentController(
 
 func (c *agentController) sync(ctx context.Context, syncCtx factory.SyncContext) error {
 	score := NewScore(c.nodeInformer, c.podInformer)
-	cpuValue, memValue, err := score.calculateValue()
+	cpuScore, memScore, err := score.calculateScore()
 	items := []apiv1alpha2.AddOnPlacementScoreItem{
 		{
 			Name:  "cpuAvailable",
-			Value: int32(cpuValue),
+			Value: int32(cpuScore),
 		},
 		{
 			Name:  "memAvailable",
-			Value: int32(memValue),
+			Value: int32(memScore),
 		},
 	}
 
